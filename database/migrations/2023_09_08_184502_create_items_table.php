@@ -12,16 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('category_id')->constrained();
-            $table->description();
-            $table->status();
-            $table->production_time_per_minutes();
-            $table->reference_url();
-            $table->memo();
-            $table->show_memo();
-            $table->timestamps();
+             $table->id();
+             $table->foreignId('user_id')->nullable()->constrained();
+             $table->foreignId('category_id')->nullable()->constrained();
+             $table->string('title');
+             $table->text('description');
+             $table->string('status')->nullable(); // string データ型を使用
+             $table->integer('production_time_per_minutes')->nullable();
+             $table->string('reference_url')->nullable();
+             $table->text('memo')->nullable();
+             $table->boolean('show_memo')->nullable();
+             $table->timestamps();
         });
     }
 
