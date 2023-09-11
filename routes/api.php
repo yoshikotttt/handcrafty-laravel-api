@@ -18,10 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-   
-    
-
-
     Route::get('test', function () {
         return response()->json(['message' => 'This is a protected route!']);
     });

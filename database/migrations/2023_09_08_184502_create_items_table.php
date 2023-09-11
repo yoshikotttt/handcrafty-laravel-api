@@ -20,6 +20,7 @@ return new class extends Migration
              $table->string('status')->nullable(); // string データ型を使用
              $table->integer('production_time_per_minutes')->nullable();
              $table->string('reference_url')->nullable();
+             $table->string('image_url')->nullable();
              $table->text('memo')->nullable();
              $table->boolean('show_memo')->nullable();
              $table->timestamps();

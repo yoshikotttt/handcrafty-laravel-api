@@ -32,6 +32,14 @@ class ItemsController extends Controller
         $item->title = $request->input('title');
         $item->category_id = $request->input('category_id');
         $item->description = $request->input('description');
+
+        if($request->hasFile('image_url')){
+            $image = $request->file('image_url');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('image_url'),$filename);
+
+            $item->image_url = 'image_url/' . $filename;
+        }
         $item->save();
 
         return response()->json(['message' => 'Item created successfully']);
