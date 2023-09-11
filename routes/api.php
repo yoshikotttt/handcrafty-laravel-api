@@ -9,6 +9,7 @@ use App\Http\Controllers\ItemsController;
 
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/register', [RegisteredUserController::class, 'store']);
+Route::get('/posts', [ItemsController::class,'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
@@ -16,6 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', function (Request $request) {
         return $request->user();
     });
+
+   
+    
+
 
     Route::get('test', function () {
         return response()->json(['message' => 'This is a protected route!']);
