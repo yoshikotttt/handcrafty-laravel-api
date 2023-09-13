@@ -25,6 +25,7 @@ class ItemsController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
+            'production_time_per_minutes' => 'integer|nullable',
         ]);
 
         $item = new Items;
@@ -32,6 +33,11 @@ class ItemsController extends Controller
         $item->title = $request->input('title');
         $item->category_id = $request->input('category_id');
         $item->description = $request->input('description');
+        $item->reference_url = $request->input('reference_url');
+        $item->memo = $request->input('memo');
+        $item->production_time_per_minutes = $request->input('production_time_per_minutes');
+
+
 
         if($request->hasFile('image_url')){
             $image = $request->file('image_url');
