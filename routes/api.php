@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemsController;
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::get('/posts', [ItemsController::class,'index']);
+Route::get('/posts/{item_id}', [ItemsController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
@@ -23,4 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/users/{user_id}/posts/new', [ItemsController::class, 'create']);
+
+   
+    Route::delete('/posts/{item_id}', [ItemsController::class, 'destroy']);
 });

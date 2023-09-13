@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Items;
+use App\Models\Categories;
 use Illuminate\Http\Request;
 
 class ItemsController extends Controller
@@ -63,15 +64,28 @@ class ItemsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Items $book)
+    public function show($item_id)
     {
-        //
+       // 特定のアイテムをデータベースから取得
+    $item = Items::find($item_id);
+    // $item = Items::with('categories')->find($item_id);
+
+    //  // $item の内容を確認
+    // dd($item);
+
+     if (!$item) {
+        // アイテムが見つからない場合、適切なエラーレスポンスを返す（例: 404 Not Found）
+        return response()->json(['message' => 'アイテムが見つかりません'], 404);
+    }
+
+    // アイテムデータをJSON形式でレスポンスとして返す
+    return response()->json($item);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Items $Items)
+    public function edit(Items $item)
     {
         //
     }
@@ -79,7 +93,7 @@ class ItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Items $books)
+    public function update(Request $request, Items  $item)
     {
         //
     }
@@ -87,9 +101,16 @@ class ItemsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Items $Items)
+    public function destroy($item_id, Request $request)
     {
-        //
+        $item = Items::findOrFail($item_id);
+
+        if($item->user_id !== $request->user()->id){
+            return response()->json(['error' => 'Unauthorized action'],403);
+        }
+        $item->delete();
+
+        return response()->json(['message'=> 'Post deleted successfully']);
     }
 }
 

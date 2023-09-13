@@ -13,7 +13,7 @@ class Items extends Model
     // Category モデルとのリレーションを設定
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Categories::class,'category_id');
     }
 
         public function images()
