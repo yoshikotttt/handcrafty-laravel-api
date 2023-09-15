@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/users/{user_id}/posts/new', [ItemsController::class, 'create']);
 
+    Route::put('/users/{user_id}/posts/{item_id}/edit', [ItemsController::class, 'update']);
    
     Route::delete('/posts/{item_id}', [ItemsController::class, 'destroy']);
 });
