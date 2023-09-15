@@ -85,18 +85,48 @@ class ItemsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Items $item)
+    public function edit($user_id, $item_id)
     {
-        //
+      
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Items  $item)
+    public function update(Request $request, $user_id, $item_id)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+            'production_time_per_minutes' => 'integer|nullable',
+        ]);
+
+        $item = Items::findOrFail($item_id);
+
+        // Check if item belongs to the given user
+        if ($item->user_id != $user_id) {
+            return response()->json(['message' => 'Permission denied'], 403);
+        }
+
+        $item->title = $request->input('title');
+        $item->category_id = $request->input('category_id');
+        $item->description = $request->input('description');
+        $item->reference_url = $request->input('reference_url');
+        $item->memo = $request->input('memo');
+        $item->production_time_per_minutes = $request->input('production_time_per_minutes');
+
+        if ($request->hasFile('image_url')) {
+            $image = $request->file('image_url');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('image_url'), $filename);
+
+            $item->image_url = 'image_url/' . $filename;
+        }
+        $item->save();
+
+        return response()->json(['message' => 'Item updated successfully']);
     }
+
 
     /**
      * Remove the specified resource from storage.
