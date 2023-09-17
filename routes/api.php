@@ -19,13 +19,15 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    Route::get('/users/me ', [UsersController::class, 'show']);  
+
     Route::get('test', function () {
         return response()->json(['message' => 'This is a protected route!']);
     });
 
-    Route::post('/users/{user_id}/posts/new', [ItemsController::class, 'create']);
+    Route::post('/users/posts/new', [ItemsController::class, 'create']);
 
-    Route::put('/users/{user_id}/posts/{item_id}/edit', [ItemsController::class, 'update']);
+    Route::put('/users/posts/{item_id}/edit', [ItemsController::class, 'update']);
    
     Route::delete('/posts/{item_id}', [ItemsController::class, 'destroy']);
 });
