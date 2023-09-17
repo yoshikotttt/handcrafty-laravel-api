@@ -21,8 +21,12 @@ class ItemsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, $user_id)
+    public function create(Request $request)
     {
+
+         // 現在のログインユーザーを取得
+        $user = auth()->user();
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
@@ -30,7 +34,7 @@ class ItemsController extends Controller
         ]);
 
         $item = new Items;
-        $item->user_id = $user_id;
+        $item->user_id = $user->id;
         $item->title = $request->input('title');
         $item->category_id = $request->input('category_id');
         $item->description = $request->input('description');
@@ -93,8 +97,11 @@ class ItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $user_id, $item_id)
+    public function update(Request $request, $item_id)
     {
+     // 現在のログインユーザーを取得
+        $user = auth()->user();
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
@@ -104,7 +111,7 @@ class ItemsController extends Controller
         $item = Items::findOrFail($item_id);
 
         // Check if item belongs to the given user
-        if ($item->user_id != $user_id) {
+        if ($item->user_id != $user->id) {
             return response()->json(['message' => 'Permission denied'], 403);
         }
 
