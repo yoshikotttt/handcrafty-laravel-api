@@ -71,8 +71,8 @@ class ItemsController extends Controller
     public function show($item_id)
     {
        // 特定のアイテムをデータベースから取得
-    $item = Items::find($item_id);
-    // $item = Items::with('categories')->find($item_id);
+    // $item = Items::find($item_id);
+    $item = Items::with(['category', 'user'])->find($item_id);
 
     //  // $item の内容を確認
     // dd($item);
