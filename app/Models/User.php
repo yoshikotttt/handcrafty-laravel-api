@@ -46,8 +46,18 @@ class User extends Authenticatable
     ];
 
     public function items()
-{
-    return $this->hasMany(Items::class);
-}
+    {
+        return $this->hasMany(Items::class);
+    }
 
+
+    public function likes()
+    {
+        return $this->hasMany(Likes::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorites::class);
+    }
 }

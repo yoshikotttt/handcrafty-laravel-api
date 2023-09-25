@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Favorites;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FavoritesController extends Controller
 {
@@ -20,8 +22,8 @@ class FavoritesController extends Controller
      */
     public function create($item_id)
     {
-         // 現在のログインユーザーを取得
-        $user = auth()->user();
+        // 現在のログインユーザーを取得
+        $user = Auth::user(); 
         // すでに「いいね」されているか確認
         $existingFavorite = Favorites::where('user_id', $user->id)->where('item_id', $item_id)->first();
 
@@ -52,7 +54,7 @@ class FavoritesController extends Controller
      */
     public function check($item_id)
     {
-        $user = auth()->user();
+        $user = Auth::user(); 
 
         $existingFavorite = Favorites::where('user_id', $user->id)->where('item_id', $item_id)->first();
 
@@ -93,5 +95,20 @@ class FavoritesController extends Controller
         }
         $existingFavorite->delete();
         return response()->json(['message' => 'Favorite removed successfully']);
+    }
+
+    public function getAll()
+    {
+        $user = Auth::user();
+        //    Log::info('Received request data:', ['data' => $user->id]);
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // ユーザーのお気に入りを取得
+        // $favorites = $user-> favorites;
+        $favorites = $user->favorites()->with('item')->get(); 
+        return response()->json($favorites);
     }
 }

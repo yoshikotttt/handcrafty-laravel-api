@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Items;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -26,9 +27,11 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($user_id)
+    public function show()
     {
-        $items = Items::where('user_id',$user_id)->get();
+        $user = Auth::user();
+
+        $items = Items::where('user_id',$user->id)->get();
 
         if ($items->isEmpty()) {
         // アイテムが見つからない場合、適切なエラーレスポンスを返す（例: 404 Not Found）
@@ -41,19 +44,7 @@ class UsersController extends Controller
         
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    
+ 
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-}
+
