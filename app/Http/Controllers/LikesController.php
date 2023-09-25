@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Likes;
 use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
-      /**
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -17,48 +18,75 @@ class LikesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($item_id)
     {
-        //
+
+        // 現在のログインユーザーを取得
+        $user = auth()->user();
+        // すでに「いいね」されているか確認
+        $existingLike = Likes::where('user_id', $user->id)->where('item_id', $item_id)->first();
+
+        if ($existingLike) {
+            return response()->json(['message' => 'Already liked']);
+        }
+
+        $like = new Likes();
+        $like->user_id = $user->id;
+        $like->item_id = $item_id;
+
+
+        $like->save();
+
+        return response()->json(['message' => 'success']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+   
+    public function check($item_id)
     {
-        //
+        $user = auth()->user();
+
+        $existingLike = Likes::where('user_id',$user->id)->where('item_id',$item_id)->first();
+
+        if($existingLike){
+            return response()->json(['isLiked' => true]);
+        }else {
+            return response()->json(['isLiked' => false]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($item_id)
     {
-        //
+        $user = auth()->user();
+
+        $existingLike = Likes::where('user_id',$user->id)->where('item_id',$item_id)->first();
+
+        if(!$existingLike){
+            return response()->json(['message' => 'like not found'], 404);
+        }
+        $existingLike->delete();
+        return response()->json(['message' => 'Like removed successfully']);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function info($item_id){
+        try {
+            // いいねの総数を取得
+            $likeCount = Likes::where('item_id', $item_id)->count();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            // 最初のいいねをしたユーザーの情報を取得
+            $firstLiker = Likes::where('item_id', $item_id)
+                ->orderBy('created_at', 'asc')
+                ->with('user') // 前提: Likeモデルにuserリレーションがある
+                ->first();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            // 必要に応じてデータの形式を整形
+            $response = [
+                'likeCount' => $likeCount,
+                'firstLiker' => $firstLiker ? $firstLiker->user : null,
+            ];
+
+            return response()->json($response, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Data retrieval failed'], 500);
+        }
     }
 }
