@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorites;
 use Illuminate\Http\Request;
 
 class FavoritesController extends Controller
@@ -17,9 +18,25 @@ class FavoritesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($item_id)
     {
-        //
+         // 現在のログインユーザーを取得
+        $user = auth()->user();
+        // すでに「いいね」されているか確認
+        $existingFavorite = Favorites::where('user_id', $user->id)->where('item_id', $item_id)->first();
+
+        if ($existingFavorite) {
+            return response()->json(['message' => 'Already favorite']);
+        }
+
+        $favorite = new Favorites();
+        $favorite->user_id = $user->id;
+        $favorite->item_id = $item_id;
+
+
+        $favorite->save();
+
+        return response()->json(['message' => 'success']);
     }
 
     /**
@@ -33,9 +50,17 @@ class FavoritesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function check($item_id)
     {
-        //
+        $user = auth()->user();
+
+        $existingFavorite = Favorites::where('user_id', $user->id)->where('item_id', $item_id)->first();
+
+        if ($existingFavorite) {
+            return response()->json(['isFavorite' => true]);
+        } else {
+            return response()->json(['isFavorite' => false]);
+        }
     }
 
     /**
@@ -57,8 +82,16 @@ class FavoritesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($item_id)
     {
-        //
+        $user = auth()->user();
+
+        $existingFavorite = Favorites::where('user_id', $user->id)->where('item_id', $item_id)->first();
+
+        if (!$existingFavorite) {
+            return response()->json(['message' => 'favorite not found'], 404);
+        }
+        $existingFavorite->delete();
+        return response()->json(['message' => 'Favorite removed successfully']);
     }
 }
