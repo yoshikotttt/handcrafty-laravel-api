@@ -36,6 +36,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        //２０４？
         return response()->noContent();
     }
 }
