@@ -10,10 +10,16 @@ use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\UsersController;
 
+
+
+
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/register', [RegisteredUserController::class, 'store']);
-Route::get('/posts', [ItemsController::class,'index']);
+//全投稿ページ
+Route::get('/posts', [ItemsController::class, 'index']);
+//個別投稿ページ
 Route::get('/posts/{item_id}', [ItemsController::class, 'show']);
+
 //いいねがあれば件数を表示させる
 Route::get('/posts/{item_id}/likes/info', [LikesController::class, 'info']);
 
@@ -21,12 +27,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // ログアウト
     Route::post('/logout', LogoutController::class)->name('logout');
 
-    Route::get('user', function (Request $request) {
-        return $request->user();
-    });
-    // マイページ 
-    Route::get('/users/me ', [UsersController::class, 'show']);  
 
+
+    // マイページ 
+    Route::get('/users/me ', [UsersController::class, 'show']);
     //新規投稿
     Route::post('/users/posts/new', [ItemsController::class, 'create']);
     //更新
@@ -34,10 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //削除
     Route::delete('/posts/{item_id}', [ItemsController::class, 'destroy']);
 
-    //テスト
-    Route::get('test', function () {
-        return response()->json(['message' => 'This is a protected route!']);
-    });
+
 
     // ----- いいね ----------
     //いいね登録
@@ -60,3 +61,14 @@ Route::middleware('auth:sanctum')->group(function () {
     //それぞれのuser_idが持つお気に入りの全データ
     Route::get('/favorites', [FavoritesController::class, 'getAll']);
 });
+
+
+
+    //テスト
+    Route::get('test', function () {
+        return response()->json(['message' => 'This is a protected route!']);
+    });
+
+    Route::get('user', function (Request $request) {
+        return $request->user();
+    });

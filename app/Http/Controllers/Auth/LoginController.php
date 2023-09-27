@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,9 +23,6 @@ final class LoginController extends Controller
         // 認証開始
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
-
-            
             $token = $user->createToken('MyAppToken')->plainTextToken;
 
             // レスポンスを返す
@@ -37,7 +33,7 @@ final class LoginController extends Controller
             ]);
         }
 
-        // 認証エラーが発生した場合に例外を投げる
-        throw new AuthenticationException();
+        // 認証エラーが発生した場合のレスポンスを返す
+        return response()->json(['message' => 'メールアドレスかパスワードが間違っています'], 401);
     }
 }
