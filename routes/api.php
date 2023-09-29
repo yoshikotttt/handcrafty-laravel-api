@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\UsersController;
@@ -29,8 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-    // マイページ 
-    Route::get('/users/me ', [UsersController::class, 'show']);
+    //マイページ(ログインユーザー)
+    Route::get('/users/me ', [UsersController::class, 'getMyProfile']);
+    //マイページ(訪問先)
+    Route::get('/users/{user_id}', [UsersController::class, 'getUserProfile']);
+
     //新規投稿
     Route::post('/users/posts/new', [ItemsController::class, 'create']);
     //更新
@@ -60,7 +64,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/posts/{item_id}/favorites/check', [FavoritesController::class, 'check']);
     //それぞれのuser_idが持つお気に入りの全データ
     Route::get('/favorites', [FavoritesController::class, 'getAll']);
+
+
+    // ----- フォロー -----------
+    //フォロー登録
+    Route::post('/posts/{user_id}/follow', [FollowsController::class, 'create']);
+    //フォロー削除
+    Route::delete('/posts/{user_id}/follow', [FollowsController::class, 'destroy']);
+    //フォローの情報があるかのチェック(is-following)
+    Route::get('/posts/{user_id}/follow/check', [FollowsController::class, 'check']);
+
+    
+
+
+
 });
+
+
 
 
 
