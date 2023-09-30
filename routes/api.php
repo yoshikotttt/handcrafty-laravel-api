@@ -31,9 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     //マイページ(ログインユーザー)
-    Route::get('/users/me ', [UsersController::class, 'getMyProfile']);
+    Route::get('/users/me', [UsersController::class, 'myProfile']);
+    //プロフィール編集ページのための情報取得
+    Route::get('/users/profile', [UsersController::class, 'getProfileEditData']);
+    //プロフィール更新
+    Route::put('/users/profile', [UsersController::class, 'update']);
     //マイページ(訪問先)
-    Route::get('/users/{user_id}', [UsersController::class, 'getUserProfile']);
+    Route::get('/users/{user_id}', [UsersController::class, 'getProfile']);
 
     //新規投稿
     Route::post('/users/posts/new', [ItemsController::class, 'create']);

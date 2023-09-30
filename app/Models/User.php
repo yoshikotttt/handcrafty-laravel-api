@@ -60,4 +60,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favorites::class);
     }
+
+    public function follows()
+    {
+        return $this->hasMany(Follows::class, 'from_user_id');
+        return $this->hasMany(Follows::class, 'to_user_id');
+    }
+
 }
