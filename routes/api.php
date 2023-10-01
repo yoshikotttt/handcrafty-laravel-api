@@ -78,7 +78,14 @@ Route::middleware('auth:sanctum')->group(function () {
     //フォローの情報があるかのチェック(is-following)
     Route::get('/posts/{user_id}/follow/check', [FollowsController::class, 'check']);
 
-    
+    //ログインユーザーのフォロワー
+    Route::get('/users/me/followers', [FollowsController::class, 'myFollowers']);
+    //ログインユーザーのフォロー中
+    Route::get('/users/me/following', [FollowsController::class, 'myFollowing']);
+    //訪問先ユーザーのフォロワー
+    Route::get('/users/{user_id}/followers', [FollowsController::class, 'followers']);
+    //訪問先ユーザーのフォロー中
+    Route::get('/users/{user_id}/following', [FollowsController::class, 'following']);
 
 
 
