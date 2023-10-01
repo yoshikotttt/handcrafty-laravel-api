@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -23,30 +24,37 @@ class UsersController extends Controller
     {
         $user = Auth::user();
 
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'bio'  => 'nullable|string|max:500',
-            'avatar_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'avatar_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = $validator->validated();
+
         // avatar_url（画像）があれば、保存してそのURLを取得
-        if($request->hasFile('avatar_url')){
+        if ($request->hasFile('avatar_url')) {
             $avatar_url = $request->file('avatar_url');
             $filename = time() . '_' . $avatar_url->getClientOriginalName();
             $avatar_url->move(public_path('avatar_url'), $filename);
-            $validatedData['avatar_url'] = 'avatar_url/' . $filename;
-            }
+            $data['avatar_url'] = 'avatar_url/' . $filename; // $data に新しい URL をセット
+        }
 
-        $user->update($validatedData);
-
+        $user->update($data);
 
         return response()->json([
             'message' => 'Profile updated successfully',
             'data' => $user
         ]);
-
-
     }
+
    
     public function getProfileEditData()
     {
