@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follows;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FollowsController extends Controller
 {
@@ -54,41 +56,8 @@ class FollowsController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($user_id)
 
     {
@@ -104,7 +73,72 @@ class FollowsController extends Controller
         }
         $existingFollow->delete();
         return response()->json(['message' => 'Follow removed successfully']);
+    }
 
 
+    public function myFollowers()
+    {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $user = Auth::user();
+        $followers = $user->followers;
+
+        if ($followers->isEmpty()) {
+            return response()->json(['message' => 'No followers found'], 404);
+        }
+
+        return response()->json($followers);
+    }
+
+    public function myFollowing()
+    {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $user = Auth::user();
+        $following = $user->following;
+
+        if ($following->isEmpty()) {
+            return response()->json(['message' => 'No following users found'], 404);
+        }
+
+        return response()->json($following);
+    }
+
+    public function followers($user_id)
+    {
+        $user = User::find($user_id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $followers = $user->followers;
+
+        if ($followers->isEmpty()) {
+            return response()->json(['message' => 'This user has no followers'], 404);
+        }
+
+        return response()->json($followers);
+    }
+
+    public function following($user_id)
+    {
+        $user = User::find($user_id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $following = $user->following;
+
+        if ($following->isEmpty()) {
+            return response()->json(['message' => 'This user is not following anyone'], 404);
+        }
+
+        return response()->json($following);
     }
 }

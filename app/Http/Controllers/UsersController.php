@@ -67,23 +67,19 @@ class UsersController extends Controller
 
         $items = Items::where('user_id', $user->id)->get();
 
-        if ($items->isEmpty()) {
-            // アイテムが見つからない
-            return response()->json(['message' => 'アイテムが見つかりません'], 404);
-        }
-
-        //投稿数
+        // 投稿数
         $postsCount = $user->items()->count();
-        //フォロワー
-        $followersCount = $user->follows()->where('to_user_id', $user->id)->count();
-        //フォロー中
-        $followingCount = $user->follows()->where('from_user_id', $user->id)->count();
+        // フォロワー数
+        $followersCount = $user->followers->count();
+        // フォロー中の数
+        $followingCount = $user->following->count();
+
 
         
 
         // アイテムとユーザーデータをJSON形式でレスポンスとして返す
         return response()->json([
-            'user' => $user, // ログインしているユーザーの情報
+            'user' => $user, // ユーザーの情報
             'items' => $items, // そのユーザーのアイテム情報
             'isOwnProfile' => true,  // 自分のプロフィールページであることを示すフラグ
             'postsCount' => $postsCount,
@@ -105,23 +101,19 @@ class UsersController extends Controller
 
         $items = Items::where('user_id', $user->id)->get();
 
-        // アイテムが見つからない
-        if ($items->isEmpty()) {
-            return response()->json(['message' => 'アイテムが見つかりません'], 404);
-        }
-
-        //投稿数
+        // 投稿数
         $postsCount = $user->items()->count();
-        //フォロワー
-        $followersCount = $user->follows()->where('to_user_id',$user->id)->count();
-        //フォロー中
-        $followingCount = $user->follows()->where('from_user_id', $user->id)->count();
+        // フォロワー数
+        $followersCount = $user->followers->count();
+        // フォロー中の数
+        $followingCount = $user->following->count();
+
 
        
 
         // アイテムとユーザーデータをJSON形式でレスポンスとして返す
         return response()->json([
-            'user' => $user, // ログインしているユーザーの情報
+            'user' => $user, // ユーザーの情報
             'items' => $items, // そのユーザーのアイテム情報
             'isOwnProfile' => false,  // 他のユーザーのプロフィールページであることを示すフラグ
             'postsCount' => $postsCount,
