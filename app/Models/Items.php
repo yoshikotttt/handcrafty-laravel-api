@@ -1,11 +1,35 @@
 <?php
 
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Items extends Model
 {
-    use HasFactory;
+    // protected $fillable = ['title', 'description'];
+    protected $fillable = ['user_id', 'title', 'category_id','description', 'status', 'production_time_per_minutes', 'reference_url','image_url', 'memo', 'show_memo'];
+
+    // Category モデルとのリレーションを設定
+    public function category()
+    {
+        return $this->belongsTo(Categories::class,'category_id');
+    }
+
+        public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
+
+        public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorites::class);
+    }
+    
 }
+
