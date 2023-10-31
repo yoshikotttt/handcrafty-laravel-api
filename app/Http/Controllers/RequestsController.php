@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Requests;
 use Illuminate\Http\Request;
 
 class RequestsController extends Controller
@@ -17,9 +18,19 @@ class RequestsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $data = $request->validate([
+            'to_user_id' => 'required|integer|exists:users,id',
+            'item_id' => 'required|integer|exists:items,id',
+            'message' => 'required|string|max:500'
+        ]);
+
+        $data['from_user_id'] = auth()->id();
+
+        $newRequest = Requests::create($data); 
+
+        return response()->json(['message' => 'Request successfully created', 'data' => $newRequest], 201);
     }
 
     /**

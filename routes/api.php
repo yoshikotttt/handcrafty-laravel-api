@@ -9,6 +9,8 @@ use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\LikesController;
+use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UsersController;
 
 
@@ -87,6 +89,12 @@ Route::middleware('auth:sanctum')->group(function () {
     //訪問先ユーザーのフォロー中
     Route::get('/users/{user_id}/following', [FollowsController::class, 'following']);
 
+
+    // ------ リクエスト -----------
+    //新規リクエスト
+    Route::post('/request', [RequestsController::class, 'create']);
+    //通知数の取得
+    Route::get('/notifications', [NotificationsController::class, 'index']);
 
 
 });
