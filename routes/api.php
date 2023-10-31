@@ -95,7 +95,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/request', [RequestsController::class, 'create']);
     //通知数の取得
     Route::get('/notifications', [NotificationsController::class, 'index']);
-
+    //通知詳細
+    Route::get('/notifications/{id}', [NotificationsController::class, 'show']);
+    //statusの更新
+    Route::put('/notifications/{id}', [NotificationsController::class, 'update']);
 
 });
 
