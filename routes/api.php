@@ -9,6 +9,7 @@ use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\LikesController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UsersController;
@@ -99,6 +100,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications/{id}', [NotificationsController::class, 'show']);
     //statusの更新
     Route::put('/notifications/{id}', [NotificationsController::class, 'update']);
+
+    // ------- メッセージ ------------
+    //新規メッセージ
+    Route::post('/chat/{roomId}', [MessagesController::class, 'create']);
+    //全メッセージ取得
+    Route::get('/chat/{roomId}', [MessagesController::class, 'index']);
+
 
 });
 
