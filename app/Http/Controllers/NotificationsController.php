@@ -30,6 +30,37 @@ class NotificationsController extends Controller
         return response()->json(['notifications' => $notifications]);
     }
 
+    public function getAllNotifications()
+    {
+        $user = auth()->user(); // 認証ユーザーを取得
+
+        $notifications = Requests::with(['fromUser', 'toUser'])
+        ->where(function ($query) use ($user) {
+            $query->where('to_user_id', $user->id)
+                ->orWhere('from_user_id', $user->id);
+        })
+            ->get();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'currentUserId' => $user->id
+        ]);
+
+    }
+
+    public function getUnreadNotificationsCount()
+    {
+        $user = auth()->user(); // 認証ユーザーを取得
+
+        $count = Requests::where('to_user_id', $user->id)
+            ->where('status', 0)
+            ->count();
+
+        return response()->json(['unreadCount' => $count]);
+    }
+
+
+
     public function show($id)
     {
         // 現在の認証ユーザーIDを取得
