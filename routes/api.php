@@ -94,8 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // ------ リクエスト -----------
     //新規リクエスト
     Route::post('/request', [RequestsController::class, 'create']);
-    //通知数の取得
-    Route::get('/notifications', [NotificationsController::class, 'index']);
+    //未読通知数の取得
+    Route::get('/notifications/unread/count', [NotificationsController::class, 'getUnreadNotificationsCount']);
+    //全通知の取得
+    Route::get('/all-notifications', [NotificationsController::class, 'getAllNotifications']);
+    // Route::get('/notifications', [NotificationsController::class, 'index']);
     //通知詳細
     Route::get('/notifications/{id}', [NotificationsController::class, 'show']);
     //statusの更新
