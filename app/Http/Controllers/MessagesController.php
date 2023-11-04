@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Messages;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -12,6 +13,12 @@ class MessagesController extends Controller
      */
     public function index(Request $request, $roomId)
     {
+        // $ids = explode('_', $roomId);
+        // if (count($ids) != 2) {
+        //     return response()->json(['error' => '無効なroomIdフォーマット'], 400);
+        // }
+        // list($userID1, $userID2) = $ids;
+
         list($userID1, $userID2) = explode('_', $roomId);
 
         $currentUserId = auth()->id();
@@ -39,6 +46,13 @@ class MessagesController extends Controller
      */
     public function create(Request $request, $roomId)
     {
+        
+        // $ids = explode('_', $roomId);
+        // if (count($ids) != 2) {
+        //     return response()->json(['error' => '無効なroomIdフォーマット'], 400);
+        // }
+        // list($userID1, $userID2) = $ids;
+
         list($userID1, $userID2) = explode('_', $roomId);
 
         $loggedInUserId = auth()->id();
@@ -93,4 +107,42 @@ class MessagesController extends Controller
     {
         //
     }
+
+
+    // public function chatUsersList()
+    // {
+    //     $loginUserId = auth()->id();
+
+    //     $chatUsers = Messages::with(['fromUser', 'toUser'])
+    //     ->selectRaw('CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END as user_id', [$loginUserId])
+    //         ->where(function ($query) use ($loginUserId) {
+    //             $query->where('from_user_id', $loginUserId)
+    //                 ->orWhere('to_user_id', $loginUserId);
+    //         })
+    //         ->distinct()
+    //         ->orderBy('user_id')
+    //         ->get();
+
+    //     return response()->json($chatUsers);
+    // }
+
+    public function chatUsersList()
+    {
+        $loginUserId = auth()->id();
+
+        // まず、ログインユーザーとチャットがあるユーザーIDのユニークなリストを取得します。
+        $chatUserIds = Messages::selectRaw('CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END as user_id', [$loginUserId])
+            ->where('from_user_id', $loginUserId)
+            ->orWhere('to_user_id', $loginUserId)
+            ->distinct()
+            ->pluck('user_id');
+
+        // 取得したIDのユーザーを一度に読み込みます。
+        $chatUsers = User::whereIn('id', $chatUserIds)
+            ->get();
+
+        return response()->json($chatUsers);
+    }
+
+
 }

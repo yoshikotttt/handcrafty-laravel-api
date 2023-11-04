@@ -109,6 +109,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chat/{roomId}', [MessagesController::class, 'create']);
     //全メッセージ取得
     Route::get('/chat/{roomId}', [MessagesController::class, 'index']);
+    //メッセージのやりとりがあるID
+    Route::get('/chat/users/all', [MessagesController::class, 'chatUsersList']);
+
 
 
 });
